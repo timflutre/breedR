@@ -67,6 +67,7 @@ check_genetic <- function(model = c('add_animal', 'competition'),
                           id,
                           coordinates,
                           competition_decay = 1,
+                          group,
                           pec = FALSE,
                           autofill = TRUE,
                           var.ini,
@@ -163,13 +164,18 @@ check_genetic <- function(model = c('add_animal', 'competition'),
   if (mc$model == 'competition') {
     
     ## Mandatory arguments
-    for (arg in c('coordinates')) {
-      if (eval(call('missing', as.name(arg))))
-        stop(paste('Argument', arg, 'required in the genetic component.'))
-    }
+    if (all(eval(call('missing', as.name('coordinates'))),
+            eval(call('missing', as.name('group')))))
+      stop(paste('One of arguments coordinates and group is required in the genetic component.'))
+
+    if (! eval(call('missing', as.name('coordinates'))))
+        mc$coordinates <- normalise_coordinates(coordinates,
+                                                where = 'genetic component')
     
-    mc$coordinates <- normalise_coordinates(coordinates,
-                                            where = 'genetic component')
+    ## If missing, assume the default value
+    stopifnot(is.numeric(competition_decay))
+    stopifnot(competition_decay > 0)
+    mc$competition_decay <- competition_decay
     
     ## Check pec argument
     # Specification of Permanent Environmental Effect
@@ -234,11 +240,6 @@ check_genetic <- function(model = c('add_animal', 'competition'),
     
     ## TODO: check here whether none or all var.ini were specified
     ## and return var.ini.default as an attribute
-    
-    ## If missing, assume the default value
-    stopifnot(is.numeric(competition_decay))
-    stopifnot(competition_decay > 0)
-    mc$competition_decay <- competition_decay
   }
   
   mc$var.ini <- var.ini

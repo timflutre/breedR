@@ -56,8 +56,9 @@ breedR is in [beta](https://en.wikipedia.org/wiki/Development_stage#Beta) stage.
     test_package('breedR')
     ```
   
-- Try it with your own data or with provided datasets
+  - Try it with your own data or with provided datasets
 - Report [issues](https://github.com/famuvie/breedR/issues "Issues page")
+- Develop and contribute ([see how](https://github.com/famuvie/breedR/wiki/Developing-breedR))
 
 #### Citing
 - If you use this package please cite it

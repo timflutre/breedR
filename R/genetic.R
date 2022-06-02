@@ -124,8 +124,9 @@ additive_genetic_animal <- function(pedigree, idx) {
 #' Build an additive-genetic competition model
 #' 
 #' Return incidence and structure for a \code{additive_genetic_competition}
-#' model, given the pedigree, the spatial coordinates and codes of the
-#' observations and the competition decay parameter.
+#' model, given the pedigree, the spatial coordinates or group membership
+#' and codes of the observations and the competition decay parameter (if
+#' spatial coordinates are supplied).
 #' 
 #' \code{id} must hold the codes of observed individuals in the original 
 #' codification. If recoding took place when building the pedigree, this 
@@ -149,13 +150,14 @@ additive_genetic_animal <- function(pedigree, idx) {
 #' breedR:::additive_genetic_competition(ped, coord = dat[, c('x', 'y')], dat$id, 2)
 additive_genetic_competition <- function(pedigree,
                                          coordinates,
+                                         group,
                                          id,
                                          decay,
                                          autofill = TRUE) {
   
   ## Checks
   stopifnot(is.numeric(id))
-  stopifnot(length(id) == nrow(coordinates))
+  if (missing(group)) stopifnot(length(id) == nrow(coordinates))
   # Not necessarily: might be multiple observations per genotype
   # stopifnot( (n <- length(id)) < (p <- nrow(as.data.frame(pedigree))))
   
@@ -169,7 +171,8 @@ additive_genetic_competition <- function(pedigree,
   ## objects with dummy covariance and incidence matrices respectively
   ## and then composing manually the random effect
   cov.dummy <- Matrix::Diagonal(n)
-  comp.aux <- competition(coordinates = coordinates, 
+  comp.aux <- competition(coordinates = coordinates,
+                          group       = group,
                           covariance  = cov.dummy,
                           decay       = decay,
                           autofill    = autofill)
